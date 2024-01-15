@@ -4,39 +4,38 @@ import Question from "@/schemas/Question";
 
 export const POST = routeHandler(async (request, context) => {
   const { surveyId } = context.params;
-  const survey = await prisma.survey.findUniqueOrThrow({
-    where: {
-      id: surveyId,
-    },
-    include: {
-      questions: true,
-    },
-  });
-
   const body = await request.json();
-  const validation = await Question.safeParseAsync(body);
 
+  // Validate the request body using the Question schema
+  const validation = await Question.safeParseAsync(body);
   if (!validation.success) {
     throw validation.error;
   }
 
   const { data } = validation;
-  const surveyWithQuestions = await prisma.survey.update({
+
+  // Get the current survey questions count
+  const surveyQuestionsCount = await prisma.question.count({
     where: {
-      id: surveyId,
-    },
-    data: {
-      questions: {
-        create: {
-          position: survey.questions.length,
-          ...data,
-        },
-      },
-    },
-    include: {
-      questions: true,
+      surveyId,
     },
   });
 
-  return surveyWithQuestions;
+  // Increment the position for the new question
+  const newPosition = surveyQuestionsCount;
+
+  // Create the new question with the incremented position
+  const createdQuestion = await prisma.question.create({
+    data: {
+      ...data,
+      position: newPosition,
+      survey: {
+        connect: {
+          id: surveyId,
+        },
+      },
+    },
+  });
+
+  return createdQuestion;
 });
