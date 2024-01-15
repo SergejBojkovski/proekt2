@@ -6,6 +6,17 @@ export const DELETE = routeHandler(async (request, context) => {
   const { surveyId, questionId } = context.params;
 
   if (request.method === "DELETE") {
+    // Retrieve the existing question to get its position
+    const existingQuestion = await prisma.question.findUnique({
+      where: {
+        id: questionId,
+      },
+    });
+
+    if (!existingQuestion) {
+      throw new Error(`Question with id ${questionId} not found.`);
+    }
+
     // Delete logic
     const response = await prisma.survey.update({
       where: {
@@ -23,6 +34,27 @@ export const DELETE = routeHandler(async (request, context) => {
       },
     });
 
+    // Get remaining questions and update positions starting from 0
+    const remainingQuestions = await prisma.question.findMany({
+      where: {
+        surveyId,
+      },
+      orderBy: {
+        position: 'asc',
+      },
+    });
+
+    for (let i = 0; i < remainingQuestions.length; i++) {
+      await prisma.question.update({
+        where: {
+          id: remainingQuestions[i].id,
+        },
+        data: {
+          position: i,
+        },
+      });
+    }
+
     return response;
   } else {
     // unsupported methods
@@ -31,72 +63,4 @@ export const DELETE = routeHandler(async (request, context) => {
       details: `Method ${request.method} is not supported for this route.`,
     };
   }
-});
-
-export const PUT = routeHandler(async (request, context) => {
-  const { surveyId, questionId } = context.params;
-  const body = await request.json();
-  const validation = await Question.safeParseAsync(body);
-
-  if (!validation.success) {
-    throw validation.error;
-  }
-
-  const { data } = validation;
-
-  // Handle position update
-  if (data.position !== undefined) {
-    // Retrieve the existing question
-    const existingQuestion = await prisma.question.findUnique({
-      where: {
-        id: questionId,
-      },
-    });
-
-    if (!existingQuestion) {
-      throw new Error(`Question with id ${questionId} not found.`);
-    }
-
-    // Calculate the difference in positions
-    const positionDifference = data.position - existingQuestion.position;
-
-    // Update the positions of questions
-    await prisma.question.updateMany({
-      where: {
-        surveyId,
-        position: {
-          gte: Math.min(existingQuestion.position, data.position),
-          lte: Math.max(existingQuestion.position, data.position),
-        },
-      },
-      data: {
-        position: {
-          increment: positionDifference,
-        },
-      },
-    });
-  }
-
-  const updatedSurvey = await prisma.survey.update({
-    where: {
-      id: surveyId,
-    },
-    data: {
-      questions: {
-        update: [
-          {
-            where: {
-              id: questionId,
-            },
-            data,
-          },
-        ],
-      },
-    },
-    include: {
-      questions: true,
-    },
-  });
-
-  return updatedSurvey;
 });
