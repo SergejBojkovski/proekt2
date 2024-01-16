@@ -64,3 +64,61 @@ export const DELETE = routeHandler(async (request, context) => {
     };
   }
 });
+
+export const PUT = routeHandler(async (request, context) => {
+  const { surveyId, questionId } = context.params;
+  const body = await request.json();
+  const validation = await Question.safeParseAsync(body);
+
+  if (!validation.success) {
+    throw validation.error;
+  }
+
+  const { data } = validation;
+
+  // Retrieve the existing question to get its position
+  const existingQuestion = await prisma.question.findUnique({
+    where: {
+      id: questionId,
+    },
+  });
+
+  if (!existingQuestion) {
+    throw new Error(`Question with id ${questionId} not found.`);
+  }
+
+  // Update the positions of questions starting from 0
+  const remainingQuestions = await prisma.question.findMany({
+    where: {
+      surveyId,
+    },
+    orderBy: {
+      position: 'asc',
+    },
+  });
+
+  for (let i = 0; i < remainingQuestions.length; i++) {
+    await prisma.question.update({
+      where: {
+        id: remainingQuestions[i].id,
+      },
+      data: {
+        position: i,
+      },
+    });
+  }
+
+  // Update the question's text, required properties, and position
+  const updatedQuestion = await prisma.question.update({
+    where: {
+      id: questionId,
+    },
+    data: {
+      text: data.text,
+      required: data.required,
+      position: data.position,
+    },
+  });
+
+  return updatedQuestion;
+});
