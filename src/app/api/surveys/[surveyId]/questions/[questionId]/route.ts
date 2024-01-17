@@ -87,25 +87,52 @@ export const PUT = routeHandler(async (request, context) => {
     throw new Error(`Question with id ${questionId} not found.`);
   }
 
-  // Update the positions of questions starting from 0
-  const remainingQuestions = await prisma.question.findMany({
-    where: {
-      surveyId,
-    },
-    orderBy: {
-      position: 'asc',
-    },
-  });
+  // If the position is changing, update positions accordingly
+  if (data.position !== undefined && data.position !== existingQuestion.position) {
+    const newPosition = data.position;
 
-  for (let i = 0; i < remainingQuestions.length; i++) {
-    await prisma.question.update({
+    // Retrieve all questions for the survey
+    const allQuestions = await prisma.question.findMany({
       where: {
-        id: remainingQuestions[i].id,
+        surveyId,
       },
-      data: {
-        position: i,
+      orderBy: {
+        position: 'asc',
       },
     });
+
+    // Ensure the new position is within bounds
+    const updatedPosition = Math.max(0, Math.min(newPosition, allQuestions.length - 1));
+
+    // Update positions based on the new position
+    for (let i = 0; i < allQuestions.length; i++) {
+      const currentPosition = allQuestions[i].position;
+
+      if (currentPosition === existingQuestion.position) {
+        // Update the position of the question being modified
+        await prisma.question.update({
+          where: {
+            id: questionId,
+          },
+          data: {
+            position: updatedPosition,
+          },
+        });
+      } else if (
+        currentPosition >= Math.min(existingQuestion.position, updatedPosition) &&
+        currentPosition <= Math.max(existingQuestion.position, updatedPosition)
+      ) {
+        // Shift the positions of other questions
+        await prisma.question.update({
+          where: {
+            id: allQuestions[i].id,
+          },
+          data: {
+            position: currentPosition + (newPosition > existingQuestion.position ? -1 : 1),
+          },
+        });
+      }
+    }
   }
 
   // Update the question's text, required properties, and position
