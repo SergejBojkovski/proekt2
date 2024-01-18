@@ -46,3 +46,8 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 - Delete Survey Question
 
 - Participate in a Survey
+
+## Helpful links
+
+- https://nerdcave.com/tailwind-cheat-sheet
+- https://tailwindcomponents.com/cheatsheet/
