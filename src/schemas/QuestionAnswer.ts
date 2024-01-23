@@ -1,7 +1,7 @@
-import {z} from "zod";
+import { z } from "zod";
 
-const QuestionAnswerSchema = z.object({
+const QuestionAnswer = z.object({
     answer: z.string(),
 });
 
-export default QuestionAnswerSchema;
+export default QuestionAnswer;
