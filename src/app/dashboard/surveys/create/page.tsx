@@ -1,7 +1,8 @@
 "use client";
 // import { useRouter } from 'next/navigation';
 import SurveyForm from "@/components/SurveyForm/SurveyForm";
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation'; 
+// import Custom404 from "@/pages/404";
 import { Router } from "next/router";
 
 
@@ -44,5 +45,6 @@ export default function SurveyCreatePage() {
     }
   }
 
+  // return <SurveyForm title="Create a Survey" surveyAction={handleCreateSurvey} />;
   return <SurveyForm title="Create a Survey" surveyAction={handleCreateSurvey} />;
 }
