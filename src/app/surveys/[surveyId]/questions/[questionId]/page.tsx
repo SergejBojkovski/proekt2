@@ -1,9 +1,11 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useParams } from "next/navigation";
 import { FormEventHandler } from "react";
 import { QuestionDTO, QuestionsDTO } from "@/types/QuestionDTO";
 import { useRouter } from "next/navigation";
+
+
 
 export default function PublicSurveyQuestionPage() {
   const router = useRouter();
@@ -12,7 +14,8 @@ export default function PublicSurveyQuestionPage() {
   const [questions, setQuestions] = useState<QuestionsDTO["data"]>([]);
   const [questionData, setQuestionData] = useState<QuestionDTO["data"]>();
   const currentQuestionId = Array.isArray(questionId) ? questionId[0] : questionId;
-
+  const [transform, setTransform] = useState(0);
+  const sliderRef = useRef<HTMLDivElement>(null);
 
   const getQuestions = async () => {
     try {
@@ -90,14 +93,70 @@ export default function PublicSurveyQuestionPage() {
       console.error("Error submitting answer:", error);
     }
   };
+
+  const goNext = () => {
+    setTransform(prevTransform => {
+      const newIndex = currentQuestionIndex + 1;
+      if (newIndex < questions.length && sliderRef.current) {
+        setCurrentQuestionIndex(newIndex);
+        const newTransform = -69 * newIndex;
+        return newTransform;
+      } else {
+        // If reached the end or sliderRef is null, handle accordingly
+        return prevTransform;
+      }
+    });
+  };
+
+  const goPrev = () => {
+    setTransform(prevTransform => {
+      const newIndex = currentQuestionIndex - 1;
+      if (newIndex >= 0 && sliderRef.current) {
+        setCurrentQuestionIndex(newIndex);
+        const newTransform = -69 * newIndex;
+        return newTransform;
+      } else {
+        // If reached the beginning or sliderRef is null, handle accordingly
+        return prevTransform;
+      }
+    });
+  };
+
+  console.log(questions)
   return (
     <div className="h-screen bgimage">
       <div>
-        {/* Any additional content you want to display */}
+        <div className="top-0 w-full h-full py-20 sm:py-8 px-4">
+          <div className="flex">
+            <div className=" mx-auto relative flex items-center justify-center ">
+              <button aria-label="slide backward" className="mt-[100px] absolute z-30 left-0 ml-10 focus:outline-none focus:bg-gray-400 focus:ring-2 focus:ring-offset-2 focus:ring-gray-400 cursor-pointer" id="prev" onClick={goPrev}>
+                <svg className="dark:text-gray-900" width="8" height="14" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M7 1L1 7L7 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </button>
+              <div className="w-[600px] h-full mx-[160px] overflow-x-hidden overflow-y-hidden" style={{ transform: `translateX(${transform}px)` }} ref={sliderRef}>
+                <div id="slider" className=" h-full flex lg:gap-4 md:gap-4 gap-10 items-center justify-start transition ease-out duration-500">
+                  {questions.map((_, index) => (
+                    <div key={index} className="flex w-full sm:w-auto">
+                      <div className="flex rounded-full bg-[#999999] w-[60px] h-[60px] justify-center items-center ">
+                        <h3 className="text-xl lg:text-2xl font-semibold leading-5 lg:leading-6 text-white dark:text-gray-900 p-[20px]">{index + 1}</h3>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <button aria-label="slide forward" className="mt-[100px] absolute z-30 right-0 mr-10 focus:outline-none focus:bg-gray-400 focus:ring-2 focus:ring-offset-2 focus:ring-gray-400" id="next" onClick={goNext}>
+                <svg className="dark:text-gray-900" width="8" height="14" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M1 1L7 7L1 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
       <div className="absolute bottom-0 w-full mb-30">
         <form onSubmit={handleFormSubmit}>
-          <h1 className="text-3xl font-bold text-center" style={{color:"black"}}>{questionData?.text}</h1>
+          <h1 className="text-3xl font-bold text-center" style={{ color: "black" }}>{questionData?.text}</h1>
           <div className="flex justify-center mb-10 mt-20">
             <div className="w-2/3">
               <textarea name="answer" rows={6} className="w-full border-2 rounded-md text-2xl py-3 px-3 bg-white bg-opacity-60" style={{ resize: "none" }} required={questionData?.required || false} placeholder="Your Answer Here"></textarea>

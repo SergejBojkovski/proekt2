@@ -4,16 +4,24 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "prisma generate && next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "prisma:migrate": "prisma migrate dev"
   },
   "dependencies": {
+    "@huggingface/inference": "^2.6.4",
     "@prisma/client": "^5.7.1",
+    "clsx": "^2.1.0",
+    "headlessui": "^0.0.0",
+    "heroicons": "^2.1.1",
+    "keyword-extractor": "^0.0.28",
     "lodash": "^4.17.21",
     "next": "14.0.4",
+    "nodemailer": "^6.9.8",
     "prisma": "^5.7.1",
     "react": "^18",
+    "react-d3-speedometer": "^2.1.0-rc.0",
     "react-dom": "^18",
     "react-icons": "^5.0.1",
     "react-sortablejs": "^6.1.4",
@@ -23,6 +31,7 @@
   "devDependencies": {
     "@types/lodash": "^4.14.202",
     "@types/node": "^20",
+    "@types/nodemailer": "^6.4.14",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "autoprefixer": "^10.0.1",

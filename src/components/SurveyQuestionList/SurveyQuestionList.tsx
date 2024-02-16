@@ -12,6 +12,8 @@ import {
 import { QuestionsDTO } from "@/types/QuestionDTO";
 import { debounce, isNumber, noop } from "lodash";
 import { useRouter } from "next/navigation";
+import AddQuestionModal from '@/components/Prompt/Prompt';
+
 
 
 
@@ -23,6 +25,8 @@ export default function SurveyQuestionList({
   surveyId,
 }: SurveyQuestionListProps) {
   const [questions, setQuestions] = useState<QuestionsDTO["data"]>([]);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false); // Specify boolean type for isModalOpen
+
 
   const getQuestions = useCallback(async () => {
     const response = await fetch(`/api/surveys/${surveyId}/questions`);
@@ -30,12 +34,11 @@ export default function SurveyQuestionList({
     setQuestions(data);
   }, [surveyId]);
 
-  const handleAddQuestion = async () => {
-    const text = prompt("Whats the question?");
+  const handleAddQuestion = async (questionText: string) => {
     await fetch(`/api/surveys/${surveyId}/questions`, {
-      method: "POST",
+      method: 'POST',
       body: JSON.stringify({
-        text,
+        text: questionText,
       }),
     });
 
@@ -126,7 +129,9 @@ export default function SurveyQuestionList({
   const handleRedirectToEdit = () => {
     rt.push(`/dashboard/surveys/${surveyId}/edit`)
   }
-
+  const handleRedirectToResults = () => {
+    rt.push(`/dashboard/reports/${surveyId}`)
+  }
 
 
   useEffect(() => {
@@ -138,7 +143,7 @@ export default function SurveyQuestionList({
     <div>
       <div className="flex justify-end mb-3">
         <button className="text-md border px-3 py-1 rounded-lg bg-white bg-opacity-70 me-4" onClick={handleRedirectToEdit}>Edit Survey Info</button>
-        <button className="text-md border px-3 py-1 rounded-lg bg-white bg-opacity-70 me-1">Survey Results</button>
+        <button className="text-md border px-3 py-1 rounded-lg bg-white bg-opacity-70 me-1" onClick={handleRedirectToResults}>Survey Results</button>
       </div>
       <div className="rounded-sm border border-stroke bg-white shadow-default bg-white bg-opacity-50">
         <div className="grid grid-cols-7 border-t border-stroke py-4.5 px-4 sm:grid-cols-9 md:px-6 2xl:px-7.5">
@@ -183,11 +188,14 @@ export default function SurveyQuestionList({
             </div>
           ))}
         </ReactSortable>
-        <div className="w-full">
-          <button className="bg-primary w-full py-2 text-white font-bold" onClick={handleAddQuestion}>
-            Add a Question
-          </button>
-        </div>
+      </div>
+      <div className="w-full text-center mt-[30px]">
+        <button onClick={() => setIsModalOpen(true)} className="w-[300px] h-[60px] bg-blue-500 text-dark px-4 py-2 rounded-md border bg-white bg-opacity-50 text-lg">Add Question</button>
+        <AddQuestionModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onAdd={handleAddQuestion}
+        />
       </div>
     </div>
   );

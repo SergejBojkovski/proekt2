@@ -18,21 +18,24 @@ export default function SurveyForm(props: SurveyFormProps) {
   const defaultValues: Partial<SurveyDTO["data"]> = useMemo(() => {
     return props.defaultValues || {};
   }, [props]);
-  
+
   const rt = useRouter()
 
-  const handleRedirectToQuestions = (id:string) => {
+  const handleRedirectToQuestions = (id: string) => {
     rt.push(`/dashboard/surveys/${id}`)
+  }
+  const handleRedirectToResults = (id: string) => {
+    rt.push(`/dashboard/reports/${id}`)
   }
   return (
     <div>
       {props.surveyId && (
         <div className="flex justify-end mb-3">
           <button className="text-md border px-3 py-1 rounded-lg bg-white bg-opacity-70 me-4" onClick={() => handleRedirectToQuestions(props.surveyId!)}>Edit Survey Questions</button>
-          <button className="text-md border px-3 py-1 rounded-lg bg-white bg-opacity-70 me-1">Survey Results</button>
+          <button className="text-md border px-3 py-1 rounded-lg bg-white bg-opacity-70 me-1" onClick={() => handleRedirectToResults(props.surveyId!)}>Survey Results</button>
         </div>
       )}
-      
+
       <div className="rounded-sm border border-stroke bg-white bg-opacity-60 shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
           <h3 className="font-medium text-black dark:text-white text-3xl text-center">
