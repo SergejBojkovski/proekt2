@@ -4,14 +4,12 @@ import { SurveyDTO } from "@/types/SurveyDTO";
 import { useMemo } from "react";
 import { useRouter } from "next/navigation";
 
-
 interface SurveyFormProps {
   title: string;
   defaultValues?: SurveyDTO["data"];
   surveyAction: (formData: FormData) => void;
   surveyId?: string,
 }
-
 
 
 export default function SurveyForm(props: SurveyFormProps) {
@@ -24,15 +22,12 @@ export default function SurveyForm(props: SurveyFormProps) {
   const handleRedirectToQuestions = (id: string) => {
     rt.push(`/dashboard/surveys/${id}`)
   }
-  const handleRedirectToResults = (id: string) => {
-    rt.push(`/dashboard/reports/${id}`)
-  }
   return (
     <div>
       {props.surveyId && (
         <div className="flex justify-end mb-3">
           <button className="text-md border px-3 py-1 rounded-lg bg-white bg-opacity-70 me-4" onClick={() => handleRedirectToQuestions(props.surveyId!)}>Edit Survey Questions</button>
-          <button className="text-md border px-3 py-1 rounded-lg bg-white bg-opacity-70 me-1" onClick={() => handleRedirectToResults(props.surveyId!)}>Survey Results</button>
+          <button className="text-md border px-3 py-1 rounded-lg bg-white bg-opacity-70 me-1">Survey Results</button>
         </div>
       )}
 
@@ -63,7 +58,6 @@ export default function SurveyForm(props: SurveyFormProps) {
                 />
               </div>
             </div>
-
             <div className="mb-6">
               <label className="mb-2.5 block text-black dark:text-white" htmlFor="introduction">Introduction Message</label>
               <textarea id="introduction"
@@ -74,7 +68,6 @@ export default function SurveyForm(props: SurveyFormProps) {
                 defaultValue={defaultValues.introduction!}
               ></textarea>
             </div>
-
             <div className="mb-4.5">
               <label className="mb-2.5 block text-black dark:text-white" htmlFor="status">Status</label>
               <div className="relative z-20 bg-transparent dark:bg-form-input">
@@ -92,10 +85,8 @@ export default function SurveyForm(props: SurveyFormProps) {
                     </g>
                   </svg>
                 </span>
-
               </div>
             </div>
-
             <button className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray">
               Save Survey
             </button>
