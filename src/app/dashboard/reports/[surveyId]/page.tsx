@@ -35,7 +35,7 @@ export default async function SurveyQuestionsPage({
   const questions = await getQuestionsForSurvey(params.surveyId);
 
   return (
-    <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+    <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark mt-[50px]">
       <div className="max-w-full overflow-x-auto">
         <table className="w-full table-auto">
           <thead>

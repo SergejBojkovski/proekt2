@@ -23,7 +23,7 @@ export default function SurveyForm(props: SurveyFormProps) {
     rt.push(`/dashboard/surveys/${id}`)
   }
   return (
-    <div>
+    <div className="mt-14">
       {props.surveyId && (
         <div className="flex justify-end mb-3">
           <button className="text-md border px-3 py-1 rounded-lg bg-white bg-opacity-70 me-4" onClick={() => handleRedirectToQuestions(props.surveyId!)}>Edit Survey Questions</button>

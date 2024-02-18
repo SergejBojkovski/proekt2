@@ -24,7 +24,7 @@
 }
 
 .bgimage {
-  background-image: url("/images/clouds.png");
+  background-image: url("/images/clouds-overlay.png");
   height: 100vh;
   background-repeat: no-repeat;
   background-size: cover;

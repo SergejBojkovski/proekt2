@@ -138,7 +138,7 @@ export default function PublicSurveyQuestionPage() {
                 <div id="slider" className=" h-full flex lg:gap-4 md:gap-4 gap-10 items-center justify-start transition ease-out duration-500">
                   {questions.map((_, index) => (
                     <div key={index} className="flex w-full sm:w-auto">
-                      <div className="flex rounded-full bg-[#999999] w-[60px] h-[60px] justify-center items-center ">
+                      <div className={`flex rounded-full bg-[#999999] w-[60px] h-[60px] justify-center items-center ${currentQuestionIndex === index ? 'bg-black' : 'bg-[#999999]'}`}>
                         <h3 className="text-xl lg:text-2xl font-semibold leading-5 lg:leading-6 text-white dark:text-gray-900 p-[20px]">{index + 1}</h3>
                       </div>
                     </div>

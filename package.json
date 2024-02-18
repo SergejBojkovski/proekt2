@@ -18,7 +18,7 @@
     "keyword-extractor": "^0.0.28",
     "lodash": "^4.17.21",
     "next": "14.0.4",
-    "nodemailer": "^6.9.8",
+    "nodemailer": "^6.9.9",
     "prisma": "^5.7.1",
     "react": "^18",
     "react-d3-speedometer": "^2.1.0-rc.0",

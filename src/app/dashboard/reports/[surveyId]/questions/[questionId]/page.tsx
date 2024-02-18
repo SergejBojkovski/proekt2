@@ -49,8 +49,7 @@ export default async function SurveyQuestionReportPage({
     <div className="container">
       <div className="grid grid-cols-7 gap-10">
         <div className="col-span-5">
-          <p className="mb-5">{question.text}</p>
-          <table className="w-full table-auto rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+          <table className="w-full table-auto rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark mt-[55px]">
             <thead>
               <tr className="bg-gray-2 text-left dark:bg-meta-4">
                 <th className="min-w-[220px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
@@ -99,7 +98,7 @@ export default async function SurveyQuestionReportPage({
             ) : null}
             {keywords.length ? (
               <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-                <table className="w-full table-auto">
+                <table className="w-full table-auto overflow-y-scroll">
                   <thead>
                     <tr>
                       <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white border-b border-[#eee]">

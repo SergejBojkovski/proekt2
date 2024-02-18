@@ -132,6 +132,17 @@ export default function SurveyQuestionList({
   const handleRedirectToResults = () => {
     rt.push(`/dashboard/reports/${surveyId}`)
   }
+  const handleRedirectToRecipients = () => {
+    rt.push(`/dashboard/surveys/${surveyId}/recipients`)
+  }
+  const copyParticipationLink = () => {
+    let linkName = `http://localhost:3000/surveys/${surveyId}`
+    navigator.clipboard.writeText(linkName)
+  }
+  const copyDashboardLink = () => {
+    let linkName = `http://localhost:3000/dashboard/surveys/${surveyId}`
+    navigator.clipboard.writeText(linkName)
+  }
 
 
   useEffect(() => {
@@ -142,6 +153,9 @@ export default function SurveyQuestionList({
 
     <div>
       <div className="flex justify-end mb-3">
+        <button className="text-md border px-3 py-1 rounded-lg bg-white bg-opacity-70 me-4 flex items-center" onClick={handleRedirectToRecipients}>Mail Recipients</button>
+        <button className="text-md border px-3 py-1 rounded-lg bg-white bg-opacity-70 me-4 flex items-center" onClick={copyParticipationLink}><FaClone className="mr-2" />Paricipation Link</button>
+        <button className="text-md border px-3 py-1 rounded-lg bg-white bg-opacity-70 me-4 flex items-center" onClick={copyDashboardLink}><FaClone className="mr-2" />Dashboard Link</button>
         <button className="text-md border px-3 py-1 rounded-lg bg-white bg-opacity-70 me-4" onClick={handleRedirectToEdit}>Edit Survey Info</button>
         <button className="text-md border px-3 py-1 rounded-lg bg-white bg-opacity-70 me-1" onClick={handleRedirectToResults}>Survey Results</button>
       </div>

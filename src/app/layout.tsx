@@ -14,7 +14,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body suppressHydrationWarning={true} className="bg-[url('/images/clouds.png')]">{children}</body>
+      <body suppressHydrationWarning={true} className="bg-[url('/images/clouds-overlay.png')]">{children}</body>
     </html>
   );
 }
