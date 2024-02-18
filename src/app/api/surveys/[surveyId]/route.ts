@@ -54,13 +54,6 @@ export const PATCH = routeHandler(async (request, context) => {
       const globalSentimentScore =
         totalSum !== 0 ? weightedSum / totalSum : 0;
 
-      // Uncomment the following block if using HfInference
-      // const hf = new HfInference();
-      // const keywords = await hf.tokenClassification({
-      //   model: "dbmdz/bert-large-cased-finetuned-conll03-english",
-      //   inputs: answersString,
-      // });
-
       const keywords = keyword_extractor.extract(answersString, {
         language: "english",
         remove_digits: true,
